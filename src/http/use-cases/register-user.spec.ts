@@ -2,7 +2,7 @@ import { expect, describe, it } from 'vitest'
 import { RegisterUseCase } from './register-user'
 import { compare } from 'bcryptjs'
 import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository'
-import { UserAlreadyExistsError } from './errors/invalid-credentials-error'
+import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 describe('Register Use Case', () => {
   it('should be able to register', async () => {
@@ -57,5 +57,3 @@ describe('Register Use Case', () => {
     ).rejects.toBeInstanceOf(UserAlreadyExistsError)
   })
 })
-
-// Unit Testing ?
