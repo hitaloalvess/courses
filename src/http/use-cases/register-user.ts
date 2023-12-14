@@ -3,23 +3,23 @@ import { User } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
-interface IRegisterUseCase {
+interface IRegisterUserUseCase {
   name: string
   email: string
   password: string
 }
 
-interface IRegisterUseCaseResponse {
+interface IRegisterUserUseCaseResponse {
   user: User
 }
-export class RegisterUseCase {
+export class RegisterUserUseCase {
   constructor(private usersRepository: IUsersRepository) {}
 
   async execute({
     name,
     email,
     password,
-  }: IRegisterUseCase): Promise<IRegisterUseCaseResponse> {
+  }: IRegisterUserUseCase): Promise<IRegisterUserUseCaseResponse> {
     const password_hash = await hash(password, 6)
 
     const userWithSameEmail = await this.usersRepository.findByEmail(email)
