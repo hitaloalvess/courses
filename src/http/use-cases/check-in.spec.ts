@@ -19,8 +19,8 @@ describe('Authenticate Use Case', () => {
       title: 'MACAR fitness',
       description: '',
       phone: '',
-      latitude: new Decimal(0),
-      longitude: new Decimal(0),
+      latitude: new Decimal(-20.1818112),
+      longitude: new Decimal(-49.6992256),
     })
 
     vi.useFakeTimers() // Mock a data para que ela seja criada em um espaço tempo fake
@@ -81,5 +81,25 @@ describe('Authenticate Use Case', () => {
     })
 
     expect(checkIn.id).toEqual(expect.any(String))
+  })
+
+  it('should not be able to check in on distant gym', async () => {
+    gymsRepository.checkIns.push({
+      id: 'gym-2',
+      title: 'MILFE',
+      description: '',
+      phone: '',
+      latitude: new Decimal(-20.2238529),
+      longitude: new Decimal(-49.6894409),
+    })
+
+    await expect(() =>
+      sut.execute({
+        gymId: 'gym-2',
+        userId: 'user-1',
+        userLatitude: -20.1818112,
+        userLongitude: -49.6992256,
+      }),
+    ).rejects.toBeInstanceOf(Error)
   })
 })
