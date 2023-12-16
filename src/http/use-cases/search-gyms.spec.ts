@@ -11,7 +11,7 @@ describe('Fetch User CheckIns History Use Case', () => {
     sut = new SearchGymsUseCase(gymsRepository)
   })
 
-  it('should be able to fetch user check in history', async () => {
+  it('should be able to search for gyms', async () => {
     await gymsRepository.create({
       id: 'gym-1',
       title: 'MACAR',
@@ -39,7 +39,7 @@ describe('Fetch User CheckIns History Use Case', () => {
     expect(gyms).toEqual([expect.objectContaining({ title: 'MACAR' })])
   })
 
-  it('should be able to fetch paginated check-in history', async () => {
+  it('should be able to fetch paginated gyms search', async () => {
     for (let i = 1; i <= 22; i++) {
       await gymsRepository.create({
         id: 'gym-2',
