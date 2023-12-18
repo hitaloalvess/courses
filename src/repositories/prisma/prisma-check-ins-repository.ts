@@ -34,8 +34,8 @@ export class PrismaCheckInsRepository implements ICheckInsRepository {
       where: {
         user_id: userId,
       },
-      skip: 20,
-      take: (page - 1) * 20,
+      take: 20,
+      skip: (page - 1) * 20,
     })
   }
 
