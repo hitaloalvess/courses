@@ -1,6 +1,7 @@
 import request from 'supertest'
 import { app } from '@/app'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { generateAuthenticateToken } from '@/http/utils/tests/generate-authenticate-token'
 
 describe('Fetch nearby gym (e2e)', () => {
   beforeAll(async () => {
@@ -12,18 +13,8 @@ describe('Fetch nearby gym (e2e)', () => {
   })
 
   it('should be able to fetch nearby gym', async () => {
-    await request(app.server).post('/users').send({
-      name: 'John Doe',
-      email: 'johndoe@example.com',
-      password: '123456',
-    })
-
-    const authResponse = await request(app.server).post('/sessions').send({
-      email: 'johndoe@example.com',
-      password: '123456',
-    })
-
-    const { token } = authResponse.body
+    // Todo: Criar funcao para geracao automatica de token
+    const { token } = await generateAuthenticateToken(app)
 
     await request(app.server)
       .post('/gyms')
@@ -34,6 +25,17 @@ describe('Fetch nearby gym (e2e)', () => {
         phone: '17998899929',
         latitude: -20.1818112,
         longitude: -49.709056,
+      })
+
+    await request(app.server)
+      .post('/gyms')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        title: 'MILFE',
+        description: 'Academia milfe fitness',
+        phone: '17998899929',
+        latitude: -20.3028024,
+        longitude: -49.7448473,
       })
 
     const response = await request(app.server)

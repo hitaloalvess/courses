@@ -1,6 +1,7 @@
 import request from 'supertest'
 import { app } from '@/app'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { generateAuthenticateToken } from '@/http/utils/tests/generate-authenticate-token'
 
 describe('Search gym (e2e)', () => {
   beforeAll(async () => {
@@ -12,18 +13,7 @@ describe('Search gym (e2e)', () => {
   })
 
   it('should be able to search gym by query', async () => {
-    await request(app.server).post('/users').send({
-      name: 'John Doe',
-      email: 'johndoe@example.com',
-      password: '123456',
-    })
-
-    const authResponse = await request(app.server).post('/sessions').send({
-      email: 'johndoe@example.com',
-      password: '123456',
-    })
-
-    const { token } = authResponse.body
+    const { token } = await generateAuthenticateToken(app)
 
     await request(app.server)
       .post('/gyms')
