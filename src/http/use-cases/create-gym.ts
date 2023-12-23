@@ -2,7 +2,7 @@ import { Gym } from '@prisma/client'
 import { IGymsRepository } from '@/repositories/interfaces/gyms-repository-interface'
 
 interface ICreateGymUseCase {
-  id: string | null
+  id?: string | null
   title: string
   description: string | null
   phone: string | null
