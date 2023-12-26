@@ -1,5 +1,5 @@
 import { IUsersRepository } from '@/repositories/interfaces/users-repository-interface'
-import { User } from '@prisma/client'
+import { Role, User } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
@@ -7,6 +7,7 @@ interface IRegisterUserUseCase {
   name: string
   email: string
   password: string
+  role?: Role
 }
 
 interface IRegisterUserUseCaseResponse {
@@ -19,6 +20,7 @@ export class RegisterUserUseCase {
     name,
     email,
     password,
+    role,
   }: IRegisterUserUseCase): Promise<IRegisterUserUseCaseResponse> {
     const password_hash = await hash(password, 6)
 
@@ -32,6 +34,7 @@ export class RegisterUserUseCase {
       name,
       email,
       password_hash,
+      role,
     })
 
     return {

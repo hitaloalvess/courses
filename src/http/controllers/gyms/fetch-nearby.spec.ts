@@ -14,7 +14,7 @@ describe('Fetch nearby gym (e2e)', () => {
 
   it('should be able to fetch nearby gym', async () => {
     // Todo: Criar funcao para geracao automatica de token
-    const { token } = await generateAuthenticateToken(app)
+    const { token } = await generateAuthenticateToken(app, true)
 
     await request(app.server)
       .post('/gyms')

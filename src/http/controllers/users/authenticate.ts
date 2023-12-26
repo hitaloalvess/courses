@@ -20,7 +20,9 @@ export async function AuthenticateController(
     const { user } = await authenticateUseCase.execute({ email, password })
 
     const token = await reply.jwtSign(
-      {},
+      {
+        role: user.role,
+      },
       {
         sign: {
           sub: user.id,
@@ -29,7 +31,9 @@ export async function AuthenticateController(
     )
 
     const refreshToken = await reply.jwtSign(
-      {},
+      {
+        role: user.role,
+      },
       {
         sign: {
           sub: user.id,
@@ -52,6 +56,7 @@ export async function AuthenticateController(
       return reply.status(400).send({ message: error.message })
     }
 
+    console.log(error)
     return reply.status(500).send()
   }
 }

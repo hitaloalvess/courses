@@ -11,14 +11,15 @@ export async function RegisterUserController(
     name: z.string(),
     email: z.string().email(),
     password: z.string().min(6),
+    role: z.enum(['ADMIN', 'MEMBER']).or(z.undefined()),
   })
 
-  const { name, email, password } = registerBodySchema.parse(request.body)
+  const { name, email, password, role } = registerBodySchema.parse(request.body)
 
   try {
     const registerUserUseCase = makeRegisterUseCase()
 
-    await registerUserUseCase.execute({ name, email, password })
+    await registerUserUseCase.execute({ name, email, password, role })
   } catch (error) {
     if (error instanceof UserAlreadyExistsError) {
       return reply.status(409).send({ message: error.message })

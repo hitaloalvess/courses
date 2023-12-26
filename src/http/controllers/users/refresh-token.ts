@@ -6,20 +6,25 @@ export async function RefreshTokenController(
 ) {
   await request.jwtVerify({ onlyCookie: true }) // Verifica se existe um cookie valido na requsição, caso existe o código abaixo será executado
 
+  const { role, sub } = request.user
   const token = await reply.jwtSign(
-    {},
+    {
+      role,
+    },
     {
       sign: {
-        sub: request.user.sub,
+        sub,
       },
     },
   )
 
   const refreshToken = await reply.jwtSign(
-    {},
+    {
+      role,
+    },
     {
       sign: {
-        sub: request.user.sub,
+        sub,
         expiresIn: '7d',
       },
     },
