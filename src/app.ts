@@ -1,4 +1,5 @@
 import Fastify from 'fastify'
+import fastifyCookie from '@fastify/cookie'
 import { userRoutes } from './http/controllers/users/routes'
 import { ZodError } from 'zod'
 import { env } from './env'
@@ -10,8 +11,16 @@ export const app = Fastify()
 
 app.register(fastifyJwt, {
   secret: env.JWT_SECRET,
+  cookie: {
+    cookieName: 'refreshToken',
+    signed: false,
+  },
+  sign: {
+    expiresIn: '10m',
+  },
 })
 
+app.register(fastifyCookie)
 app.register(userRoutes)
 app.register(gymsRoutes)
 app.register(checkInsRoutes)
@@ -28,6 +37,6 @@ app.setErrorHandler((error, _, reply) => {
   } else {
     // TODO: enviar mensagem a um sistema interno de monitoramento DataDog/NewRelic/Sentry
   }
-
+  console.log(error)
   return reply.status(500).send({ message: 'Internal server error' })
 })
