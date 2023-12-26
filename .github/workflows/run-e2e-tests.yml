@@ -1,0 +1,32 @@
+name: Run E2E Tests
+
+on: [pull_request] # Momento no qual o workflow será executado (Nesse exemplo, será executado toda vez que houver um push, poderia ser pull_request para toda vez que houver um pull_request)
+
+jobs: # Trabalhos que serão executados dentro desse workflow
+  run-e2e-tests:
+    name: Run E2E Tests
+    runs-on: ubuntu-latest # Em qual tipo de máquina deverá ser executado o workflow
+
+    services:
+      postgres:
+        image: bitnami/postgresql
+        ports:
+          - 5432:5432
+        env:
+          POSTGRESQL_USERNAME: docker
+          POSTGRESQL_PASSWORD: docker
+          POSTGRESQL_DATABASE: apisolid
+
+    steps: # Passos que deverão ser realizados para execução do workflow
+      - uses: actions/checkout@v3 # Baixa o código dentro da máquina
+      - uses: actions/setup-node@v3 # Instala o node
+        with:
+          node-version: 18 # Diz qual versão deverá ser instalada
+          cache: "npm" # Criará um cache das dependências
+
+      - run: npm ci # Roda um comando no terminal ( Instala as dependências)
+
+      - run: npm run test:e2e
+        env:
+          JWT_SECRET: testing
+          DATABASE_URL: postgresql://docker:docker@localhost:5432/apisolid?schema=public
