@@ -8,7 +8,7 @@ const fakeAnswerRepository: AnswerRepository = {
     return 
   }
 }
-test('Create answer question', async() => {
+test('it should be able to create a new answer question', async() => {
 
   const answerUseCase = new AnswerQuestionUseCase(fakeAnswerRepository)
   
