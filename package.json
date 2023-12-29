@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "vitest run",
-    "test:watch":"vitest"
+    "test:watch": "vitest"
   },
   "keywords": [],
   "author": "",
@@ -14,5 +14,8 @@
     "@types/node": "^20.10.5",
     "typescript": "^5.3.3",
     "vitest": "^1.1.0"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.10"
   }
 }
