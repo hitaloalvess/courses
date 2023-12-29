@@ -1,7 +1,7 @@
-import { UniqueEntityId } from "./value-objects/unique-entity-id";
+import { UniqueEntityID } from "./value-objects/unique-entity-id";
 
 export class Entity<Props>{
-  private _id: UniqueEntityId;
+  private _id: UniqueEntityID;
   protected props: Props;
 
   get id(){
@@ -9,7 +9,7 @@ export class Entity<Props>{
   }
 
   constructor(props: Props, id?: string){
-    this._id = new UniqueEntityId(id)
+    this._id = new UniqueEntityID(id)
     this.props = props
   }
 }
