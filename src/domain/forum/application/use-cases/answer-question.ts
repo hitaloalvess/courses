@@ -1,5 +1,5 @@
 import { UniqueEntityID } from '@/core/entities/value-objects/unique-entity-id'
-import { AnswerRepository } from '../repositories/answer-repository'
+import { AnswerRepository } from '../repositories/answers-repository'
 import { Answer } from '@/domain/forum/enterprise/entities/answer'
 
 interface AnswerQuestionUseCaseRequest {
