@@ -1,3 +1,6 @@
+import { Either, left, right } from '@/core/errors/handler/either'
+import { NotAllowedError } from '@/core/errors/not-allowed-error'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { QuestionCommentsRepository } from '../repositories/question-comments-repository'
 
 interface DeleteQuestionCommentUseCaseRequest {
@@ -5,25 +8,31 @@ interface DeleteQuestionCommentUseCaseRequest {
   questionCommentId: string
 }
 
+type DeleteQuestionCommentUseCaseResponse = Either<
+  ResourceNotFoundError | NotAllowedError,
+  unknown
+>
+
 export class DeleteQuestionCommentUseCase {
-  constructor(
-    private readonly questionCommentsRepo: QuestionCommentsRepository,
-  ) {}
+  constructor(private questionCommentsRepository: QuestionCommentsRepository) {}
 
   async execute({
     authorId,
     questionCommentId,
-  }: DeleteQuestionCommentUseCaseRequest): Promise<void> {
-    const question = await this.questionCommentsRepo.findById(questionCommentId)
+  }: DeleteQuestionCommentUseCaseRequest): Promise<DeleteQuestionCommentUseCaseResponse> {
+    const questionComment =
+      await this.questionCommentsRepository.findById(questionCommentId)
 
-    if (!question) {
-      throw new Error('Question comment not found.')
+    if (!questionComment) {
+      return left(new ResourceNotFoundError())
     }
 
-    if (authorId !== question.authorId.toString()) {
-      throw new Error('Not allowed.')
+    if (questionComment.authorId.toString() !== authorId) {
+      return left(new NotAllowedError())
     }
 
-    await this.questionCommentsRepo.delete(question)
+    await this.questionCommentsRepository.delete(questionComment)
+
+    return right({})
   }
 }

@@ -1,7 +1,9 @@
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { AnswerComment } from '../../enterprise/entities/answer-comment'
 import { AnswersRepository } from '../repositories/answers-repository'
-import { AnswerCommentsRepository } from '../repositories/answer-comments-repository'
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { AnswerComment } from '@/domain/forum/enterprise/entities/answer-comment'
+import { AnswerCommentsRepository } from '@/domain/forum/application/repositories/answer-comments-repository'
+import { Either, left, right } from '@/core/errors/handler/either'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
 interface CommentOnAnswerUseCaseRequest {
   authorId: string
@@ -9,33 +11,40 @@ interface CommentOnAnswerUseCaseRequest {
   content: string
 }
 
+type CommentOnAnswerUseCaseResponse = Either<
+  ResourceNotFoundError,
+  {
+    answerComment: AnswerComment
+  }
+>
+
 export class CommentOnAnswerUseCase {
   constructor(
-    private readonly answersRepo: AnswersRepository,
-    private readonly answerCommentsRepo: AnswerCommentsRepository,
+    private answersRepository: AnswersRepository,
+    private answerCommentsRepository: AnswerCommentsRepository,
   ) {}
 
   async execute({
     authorId,
     answerId,
     content,
-  }: CommentOnAnswerUseCaseRequest) {
-    const answerExists = await this.answersRepo.findById(answerId)
+  }: CommentOnAnswerUseCaseRequest): Promise<CommentOnAnswerUseCaseResponse> {
+    const answer = await this.answersRepository.findById(answerId)
 
-    if (!answerExists) {
-      throw new Error('Answer not found.')
+    if (!answer) {
+      return left(new ResourceNotFoundError())
     }
 
     const answerComment = AnswerComment.create({
-      content,
       authorId: new UniqueEntityID(authorId),
       answerId: new UniqueEntityID(answerId),
+      content,
     })
 
-    await this.answerCommentsRepo.create(answerComment)
+    await this.answerCommentsRepository.create(answerComment)
 
-    return {
+    return right({
       answerComment,
-    }
+    })
   }
 }
