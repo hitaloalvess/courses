@@ -9,7 +9,6 @@ interface EditQuestionUseCaseRequest {
   questionId: string
   title: string
   content: string
-  attachmentsIds: string[]
 }
 
 type EditQuestionUseCaseResponse = Either<

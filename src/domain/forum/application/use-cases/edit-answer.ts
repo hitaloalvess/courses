@@ -7,7 +7,6 @@ interface EditAnswerUseCaseRequest {
   authorId: string
   answerId: string
   content: string
-  attachmentsIds: string[]
 }
 
 type EditAnswerUseCaseResponse = Either<

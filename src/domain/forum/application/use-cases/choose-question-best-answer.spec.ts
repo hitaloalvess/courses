@@ -2,14 +2,14 @@ import { InMemoryAnswersRepository } from 'test/repositories/in-memory-answers-r
 import { makeAnswer } from 'test/factories/make-answer'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository'
-import { ChooseQuestionBestAnswerUseCase } from './choose-question-best-answer'
+import { ChooseQuestionBestAnswerUseCase } from '@/domain/forum/application/use-cases/choose-question-best-answer'
 import { makeQuestion } from 'test/factories/make-question'
+import { NotAllowedError } from '@/core/errors/not-allowed-error'
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository
 let inMemoryAnswersRepository: InMemoryAnswersRepository
 let sut: ChooseQuestionBestAnswerUseCase
-
-describe('Edit answer', () => {
+describe('Choose Question Best Answer', () => {
   beforeEach(() => {
     inMemoryQuestionsRepository = new InMemoryQuestionsRepository()
     inMemoryAnswersRepository = new InMemoryAnswersRepository()
@@ -18,42 +18,37 @@ describe('Edit answer', () => {
       inMemoryQuestionsRepository,
     )
   })
-
   it('should be able to choose the question best answer', async () => {
-    const newQuestion = makeQuestion()
-    const newAnswer = makeAnswer({
-      questionId: new UniqueEntityID(newQuestion.id.toString()),
+    const question = makeQuestion()
+    const answer = makeAnswer({
+      questionId: question.id,
     })
-
-    await inMemoryQuestionsRepository.create(newQuestion)
-    await inMemoryAnswersRepository.create(newAnswer)
-
+    await inMemoryQuestionsRepository.create(question)
+    await inMemoryAnswersRepository.create(answer)
     await sut.execute({
-      authorId: newQuestion.authorId.toString(),
-      answerId: newAnswer.id.toValue(),
+      answerId: answer.id.toString(),
+      authorId: question.authorId.toString(),
     })
-
     expect(inMemoryQuestionsRepository.questions[0].bestAnswerId).toEqual(
-      newAnswer.id,
+      answer.id,
     )
   })
-
   it('should not be able to to choose another user question best answer', async () => {
-    const newQuestion = makeQuestion({
+    const question = makeQuestion({
       authorId: new UniqueEntityID('author-1'),
     })
-    const newAnswer = makeAnswer({
-      questionId: new UniqueEntityID(newQuestion.id.toString()),
+    const answer = makeAnswer({
+      questionId: question.id,
+    })
+    await inMemoryQuestionsRepository.create(question)
+    await inMemoryAnswersRepository.create(answer)
+
+    const result = await sut.execute({
+      answerId: answer.id.toString(),
+      authorId: 'author-2',
     })
 
-    await inMemoryQuestionsRepository.create(newQuestion)
-    await inMemoryAnswersRepository.create(newAnswer)
-
-    await expect(() =>
-      sut.execute({
-        authorId: 'author-2',
-        answerId: newAnswer.id.toString(),
-      }),
-    ).rejects.toBeInstanceOf(Error)
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })
