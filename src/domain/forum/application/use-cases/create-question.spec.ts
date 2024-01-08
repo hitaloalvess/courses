@@ -21,8 +21,12 @@ describe('Create Question', () => {
     expect(inMemoryQuestionsRepository.questions[0]).toEqual(
       result.value?.question,
     )
-    expect(inMemoryQuestionsRepository.questions[0].attachments).toHaveLength(2)
-    expect(inMemoryQuestionsRepository.questions[0].attachments).toEqual([
+    expect(
+      inMemoryQuestionsRepository.questions[0].attachments.currentItems,
+    ).toHaveLength(2)
+    expect(
+      inMemoryQuestionsRepository.questions[0].attachments.currentItems,
+    ).toEqual([
       expect.objectContaining({ attachmentId: new UniqueEntityID('1') }),
       expect.objectContaining({ attachmentId: new UniqueEntityID('2') }),
     ])
