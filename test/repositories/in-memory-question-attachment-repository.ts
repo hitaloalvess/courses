@@ -4,13 +4,21 @@ import { QuestionAttachment } from '@/domain/forum/enterprise/entities/question-
 export class InMemoryQuestionAttachmentsRepository
   implements QuestionAttachmentsRepository
 {
-  public items: QuestionAttachment[] = []
+  public questionAttachment: QuestionAttachment[] = []
 
   async findManyByQuestionId(questionId: string) {
-    const questionAttachments = this.items.filter(
+    const questionAttachments = this.questionAttachment.filter(
       (item) => item.questionId.toString() === questionId,
     )
 
     return questionAttachments
+  }
+
+  async deleteManyByQuestionId(questionId: string) {
+    const questionAttachments = this.questionAttachment.filter(
+      (item) => item.questionId.toString() !== questionId,
+    )
+
+    this.questionAttachment = questionAttachments
   }
 }
