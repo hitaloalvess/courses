@@ -13,3 +13,11 @@ Content-Type: application/json
 
 //Separar requisições
 ###
+
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+
+{
+ "email":"hitalo.ralves@outlook.com",
+  "password":"1234567" 
+}
