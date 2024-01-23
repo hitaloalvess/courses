@@ -3,6 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { Env } from 'src/env';
+import { JwtAuthGuard } from './jwt-auth.guard';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtStrategy } from './jwt-strategy';
 
 @Module({
   imports: [
@@ -16,10 +19,17 @@ import { Env } from 'src/env';
         return {
           signOptions: { algorithm: 'RS256' },
           privateKey: Buffer.from(privateKey, 'base64'),
-          publicKeyKey: Buffer.from(publicKey, 'base64'),
+          publicKey: Buffer.from(publicKey, 'base64'),
         };
       },
     }),
+  ],
+  providers: [
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
   ],
 })
 export class AuthModule {}

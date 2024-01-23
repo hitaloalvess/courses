@@ -1,4 +1,5 @@
 @baseUrl = http://localhost:3333
+@authToken = {{authenticate.response.body.token}}
 
 # @name create_account
 
@@ -14,6 +15,7 @@ Content-Type: application/json
 //Separar requisições
 ###
 
+# @name authenticate
 POST {{baseUrl}}/sessions
 Content-Type: application/json
 
@@ -21,3 +23,11 @@ Content-Type: application/json
  "email":"hitalo.ralves@outlook.com",
   "password":"1234567" 
 }
+
+###
+
+# @name create_question
+
+POST {{baseUrl}}/questions
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
