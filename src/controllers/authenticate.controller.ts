@@ -18,6 +18,7 @@ const authenticateValidationPipe = new ZodValidationPipe(
 type authenticateBodySchema = z.infer<typeof authenticateBodySchema>;
 
 @Controller('/sessions')
+@Public()
 export class AuthenticateController {
   constructor(
     private prisma: PrismaService,
@@ -25,7 +26,6 @@ export class AuthenticateController {
   ) {}
 
   @Post()
-  @Public()
   async handle(@Body(authenticateValidationPipe) body: authenticateBodySchema) {
     const { email, password } = body;
 
