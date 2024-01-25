@@ -9,6 +9,7 @@ import { hash } from 'bcryptjs';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { z } from 'zod';
 import { ZodValidationPipe } from '../pipes/zod.validation.pipe';
+import { Public } from '@/auth/decorators/public.decorator';
 
 const createAccountBodySchema = z.object({
   name: z.string(),
@@ -23,6 +24,7 @@ const createAccountValidationPipe = new ZodValidationPipe(
 type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>;
 
 @Controller('/accounts')
+@Public()
 export class CreateAccountController {
   constructor(private prisma: PrismaService) {}
 
@@ -47,12 +49,14 @@ export class CreateAccountController {
 
     const hashedPassword = await hash(password, 8);
 
-    await this.prisma.user.create({
+    const accountCreated = await this.prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
       },
     });
+
+    return { account: accountCreated };
   }
 }
