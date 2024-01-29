@@ -1,9 +1,10 @@
+import { Public } from '@/infra/auth/decorators/public.decorator';
+import { ZodValidationPipe } from '@/infra/pipes/zod.validation.pipe';
+import { PrismaService } from '@/infra/prisma/prisma.service';
 import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcryptjs';
-import { Public } from 'src/auth/decorators/public.decorator';
-import { ZodValidationPipe } from 'src/pipes/zod.validation.pipe';
-import { PrismaService } from 'src/prisma/prisma.service';
+
 import { z } from 'zod';
 
 const authenticateBodySchema = z.object({
