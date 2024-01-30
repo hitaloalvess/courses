@@ -4,6 +4,7 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 
 import { z } from 'zod';
 import { FetchRecentQuestionsUseCase } from '@/domain/forum/application/use-cases/fetch-recent-questions';
+import { QuestionPresenter } from '../presenters/question.presenter';
 
 const pageQueryParamSchema = z
   .string()
@@ -25,10 +26,16 @@ export class FetchRecentQuestionsController {
 
   @Get()
   async handle(@Query('page', queryValidationPipe) page: PageQueryParamSchema) {
-    const questions = await this.fetchRecenteQuestionsUseCase.execute({
+    const result = await this.fetchRecenteQuestionsUseCase.execute({
       page,
     });
 
-    return { questions };
+    if (result.isLeft()) {
+      throw new Error();
+    }
+
+    const questions = result.value.questions;
+
+    return { questions: questions.map(QuestionPresenter.toHTTP) };
   }
 }
