@@ -12,6 +12,7 @@ import {
 
 import { z } from 'zod';
 import { CreateQuestionUseCase } from '@/domain/forum/application/use-cases/create-question';
+import { QuestionPresenter } from '../presenters/question.presenter';
 
 const createQuestionBodySchema = z.object({
   title: z.string(),
@@ -45,5 +46,9 @@ export class CreateQuestionController {
     if (result.isLeft()) {
       throw new BadRequestException();
     }
+
+    const question = result.value.question;
+
+    return { question: QuestionPresenter.toHTTP(question) };
   }
 }
