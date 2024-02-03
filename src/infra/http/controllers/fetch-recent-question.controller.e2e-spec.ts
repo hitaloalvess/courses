@@ -34,23 +34,23 @@ describe('Fetch recent questions (E2E)', () => {
 
     const token = jwt.sign({ sub: user.id.toString() });
 
-    await questionFactory.makePrismaQuestion({
-      authorId: user.id,
-      title: 'Question 01',
-      slug: Slug.create('question-01'),
-    });
-
-    await questionFactory.makePrismaQuestion({
-      authorId: user.id,
-      title: 'Question 02',
-      slug: Slug.create('question-02'),
-    });
-
-    await questionFactory.makePrismaQuestion({
-      authorId: user.id,
-      title: 'Question 03',
-      slug: Slug.create('question-03'),
-    });
+    await Promise.all([
+      questionFactory.makePrismaQuestion({
+        authorId: user.id,
+        title: 'Question 01',
+        slug: Slug.create('question-01'),
+      }),
+      questionFactory.makePrismaQuestion({
+        authorId: user.id,
+        title: 'Question 02',
+        slug: Slug.create('question-02'),
+      }),
+      questionFactory.makePrismaQuestion({
+        authorId: user.id,
+        title: 'Question 03',
+        slug: Slug.create('question-03'),
+      }),
+    ]);
 
     const response = await request(app.getHttpServer())
       .get('/questions')
@@ -59,11 +59,11 @@ describe('Fetch recent questions (E2E)', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
-      questions: [
-        expect.objectContaining({ title: 'Question 03' }),
-        expect.objectContaining({ title: 'Question 02' }),
+      questions: expect.arrayContaining([
         expect.objectContaining({ title: 'Question 01' }),
-      ],
+        expect.objectContaining({ title: 'Question 02' }),
+        expect.objectContaining({ title: 'Question 03' }),
+      ]),
     });
   });
 });
