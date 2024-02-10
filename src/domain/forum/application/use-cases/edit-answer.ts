@@ -63,7 +63,7 @@ export class EditAnswerUseCase {
     answer.content = content;
     answer.attachments = answerAttachmentList;
 
-    this.answersRepository.update(answer);
+    await this.answersRepository.update(answer);
 
     return right({
       answer,
