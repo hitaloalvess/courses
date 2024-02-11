@@ -20,6 +20,8 @@ describe('Fetch Answer Comments', () => {
   it('should be able to fetch answer comments', async () => {
     const student = makeStudent({ name: 'John Doe' });
 
+    inMemoryStudentsRepository.create(student);
+
     const comment1 = makeAnswerComment({
       answerId: new UniqueEntityID('answer-1'),
       authorId: student.id,
