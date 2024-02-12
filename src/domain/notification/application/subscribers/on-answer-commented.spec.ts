@@ -12,7 +12,9 @@ import { InMemoryAnswerAttachmentsRepository } from 'test/repositories/in-memory
 import { OnAnswerCommented } from './on-answer-commented';
 import { InMemoryAnswerCommentsRepository } from 'test/repositories/in-memory-answer-comments-repository';
 import { makeAnswerComment } from 'test/factories/make-answer-comment';
+import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students.repository';
 
+let inMemoryStudentsRepository: InMemoryStudentsRepository;
 let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository;
 let inMemoryAnswersRepository: InMemoryAnswersRepository;
 let inMemoryAnswerCommentsRepository: InMemoryAnswerCommentsRepository;
@@ -26,13 +28,16 @@ let sendNotificationExecuteSpy: MockInstance<
 
 describe('OnAnswerCommented', () => {
   beforeEach(() => {
+    inMemoryStudentsRepository = new InMemoryStudentsRepository();
     inMemoryAnswerAttachmentsRepository =
       new InMemoryAnswerAttachmentsRepository();
     inMemoryAnswersRepository = new InMemoryAnswersRepository(
       inMemoryAnswerAttachmentsRepository,
     );
 
-    inMemoryAnswerCommentsRepository = new InMemoryAnswerCommentsRepository();
+    inMemoryAnswerCommentsRepository = new InMemoryAnswerCommentsRepository(
+      inMemoryStudentsRepository,
+    );
 
     inMemoryNotificationsRepository = new InMemoryNotificationsRepository();
     sendNotificationUseCase = new SendNotificationUseCase(
