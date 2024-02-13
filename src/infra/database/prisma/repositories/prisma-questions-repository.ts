@@ -7,6 +7,7 @@ import { PrismaService } from '../prisma.service';
 import { QuestionAttachmentsRepository } from '@/domain/forum/application/repositories';
 import { QuestionDetails } from '@/domain/forum/enterprise/entities/value-objects/question-details';
 import { PrismaQuestionDetailsMapper } from '../mappers/prisma-question-details-mapper';
+import { DomainEvents } from '@/core/events/domain-events';
 
 @Injectable()
 export class PrismaQuestionsRepository implements QuestionsRepository {
@@ -82,6 +83,8 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
     await this.questionAttachmentsRepository.createMany(
       question.attachments.getItems(),
     );
+
+    DomainEvents.dispatchEventsForAggregate(question.id);
   }
 
   async update(question: Question): Promise<void> {
